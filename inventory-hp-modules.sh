@@ -68,6 +68,7 @@ done
 
 if [[ `snmpwalk -r 2 $snmp_options $target 1.3.6.1.2.1.1.1.0` ]]; then
     model=$(snmpwalk -O qv $snmp_options $target 1.3.6.1.2.1.1.1.0 | cut -d ',' -f 1)
+    hostname=$(snmpwalk -O qv $snmp_options $target 1.3.6.1.2.1.1.5)
     modules=$(snmpwalk -O qv $snmp_options $target 1.3.6.1.2.1.47.1.1.1.1.2 | grep -i "Module" | grep -i "[0-9]\+p" | grep -iv "Management\|slot" | tr -d '"' | uniq -c)
     if [[ -n $modules ]]; then
         while read module; do
@@ -77,9 +78,9 @@ if [[ `snmpwalk -r 2 $snmp_options $target 1.3.6.1.2.1.1.1.0` ]]; then
             total_modules="$total_modules;${count};${module_name}"
             module_count=$((module_count + $count))
         done <<< "$modules"
-        echo "${target};${model};${module_count}$total_modules"
+        echo "${hostname};${model};${module_count}$total_modules"
     else
-        echo "${target};${model};0"
+        echo "${hostname};${model};0"
     fi
 else
     echo "Unable to connect to target using snmp"
