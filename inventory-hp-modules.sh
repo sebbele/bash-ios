@@ -67,9 +67,10 @@ while getopts "h:H:v:c:a:A:e:E:l:n:u:x:X:z:" OPTION; do
 done
 
 if [[ `snmpwalk -r 2 $snmp_options $target 1.3.6.1.2.1.1.1.0` ]]; then
-    model=$(snmpwalk -O qv $snmp_options $target 1.3.6.1.2.1.1.1.0 | cut -d ',' -f 1)
+    model=$(snmpwalk -O qv $snmp_options $target 1.3.6.1.2.1.1.1.0 | grep -i "switch" | cut -d ',' -f 1)
+    model=$(cat -v <<< "$model" | tr -d "^M")
     hostname=$(snmpwalk -O qv $snmp_options $target 1.3.6.1.2.1.1.5)
-    modules=$(snmpwalk -O qv $snmp_options $target 1.3.6.1.2.1.47.1.1.1.1.2 | grep -i "Module" | grep -i "[0-9]\+p" | grep -iv "Management\|slot" | tr -d '"' | uniq -c)
+    modules=$(snmpwalk -O qv $snmp_options $target 1.3.6.1.2.1.47.1.1.1.1.2 | grep -i "[0-9]\+p" | grep -iv "Management\|slot" | tr -d '"' | uniq -c)
     if [[ -n $modules ]]; then
         while read module; do
             trimmed_line=$(echo "$module" | xargs)
