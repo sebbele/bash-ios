@@ -3,6 +3,8 @@ Gathering of bash scripts for gathering various Cisco ios (and WLC) data, using 
 This is some scripts I've made to make some tasks easier.
 Some scripts are older than others and should probably be updated sometime in the future.
 
+License: GPL3
+
 ## Using the scripts
 Help flags are available. Output is mainly csv format with semicolon (;) as delimiter.
 ./inventory-ap.sh --help
